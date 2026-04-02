@@ -1,13 +1,43 @@
+import { useState } from "react";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { Button } from "../../components/ui/Button";
-import { useAppData } from "../../state/AppDataContext";
+import { GroupItem, useAppData } from "../../state/AppDataContext";
 import { GroupsGrid } from "./GroupsGrid";
-import { NewGroupModal } from "./NewGroupModal";
-import { useState } from "react";
+import { GroupFormModal } from "./GroupFormModal";
 
 export function GroupsPage() {
-  const { groups, addGroup } = useAppData();
+  const { groups, addGroup, updateGroup, deleteGroup } = useAppData();
   const [open, setOpen] = useState(false);
+  const [editingGroup, setEditingGroup] = useState<GroupItem | null>(null);
+
+  const handleEdit = (group: GroupItem) => {
+    setEditingGroup(group);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setEditingGroup(null);
+  };
+
+  const handleSubmit = (payload: {
+    name: string;
+    description: string;
+    expiresAt?: string;
+  }) => {
+    if (editingGroup) {
+      updateGroup(editingGroup.id, payload);
+    } else {
+      addGroup(payload);
+    }
+  };
+
+  const handleDeleteFromModal = () => {
+    if (editingGroup) {
+      deleteGroup(editingGroup.id);
+      handleClose();
+    }
+  };
 
   return (
     <div>
@@ -16,13 +46,34 @@ export function GroupsPage() {
         subtitle="Organize contacts into reusable recipient lists."
       />
       <div style={{ marginBottom: "0.75rem" }}>
-        <Button onClick={() => setOpen(true)}>Add Group</Button>
+        <Button
+          onClick={() => {
+            setEditingGroup(null);
+            setOpen(true);
+          }}
+        >
+          Add Group
+        </Button>
       </div>
-      <GroupsGrid groups={groups} />
-      <NewGroupModal
+      <GroupsGrid
+        groups={groups}
+        onEdit={handleEdit}
+        onDelete={deleteGroup}
+      />
+      <GroupFormModal
         open={open}
-        onClose={() => setOpen(false)}
-        onSubmit={(payload) => addGroup(payload)}
+        onClose={handleClose}
+        onSubmit={handleSubmit}
+        onDelete={editingGroup ? handleDeleteFromModal : undefined}
+        initialValues={
+          editingGroup
+            ? {
+                name: editingGroup.name,
+                description: editingGroup.description,
+                expiresAt: editingGroup.expiresAt,
+              }
+            : undefined
+        }
       />
     </div>
   );
