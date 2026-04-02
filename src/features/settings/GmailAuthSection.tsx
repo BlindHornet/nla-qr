@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { FormEvent, useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { useAppData } from '../../state/AppDataContext';
@@ -37,6 +38,13 @@ export function GmailAuthSection() {
       <p style={{ marginBottom: 0 }}>
         Status: {settings.gmailConnected ? `Connected as ${settings.gmailEmail}` : 'Not connected'}
       </p>
+=======
+export function GmailAuthSection() {
+  return (
+    <section className="page-card" style={{ marginBottom: '1rem' }}>
+      <h3>Gmail</h3>
+      <p>OAuth connection flow will be implemented in a follow-up step.</p>
+>>>>>>> main
     </section>
   );
 }

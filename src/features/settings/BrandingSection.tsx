@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { FormEvent, useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { useAppData } from '../../state/AppDataContext';
@@ -20,6 +21,13 @@ export function BrandingSection() {
         <Button type="submit">Save Branding</Button>
       </form>
       <p style={{ marginBottom: 0 }}>Current app name: {settings.appName}</p>
+=======
+export function BrandingSection() {
+  return (
+    <section className="page-card">
+      <h3>Branding</h3>
+      <p>App name and email footer settings will be stored at settings/app.</p>
+>>>>>>> main
     </section>
   );
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useMemo, useState } from 'react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { Button } from '../../components/ui/Button';
@@ -109,6 +110,19 @@ export function SendEmailPage() {
         Send status: {canSend ? `Ready to send to ${selectedContacts.length} recipients` : 'Select recipients and connect Gmail'}
       </p>
       <EmailPreviewModal open={openPreview} previews={previews} onClose={() => setOpenPreview(false)} />
+=======
+import { PageHeader } from '../../components/layout/PageHeader';
+import { EmptyState } from '../../components/ui/EmptyState';
+
+export function SendEmailPage() {
+  return (
+    <div>
+      <PageHeader title="Send Email" subtitle="Compose QR emails for individuals or groups." />
+      <EmptyState
+        title="Compose experience coming next"
+        description="Group mode and individual mode panels will be added in the next iteration."
+      />
+>>>>>>> main
     </div>
   );
 }

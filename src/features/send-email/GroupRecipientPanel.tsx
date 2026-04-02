@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { ContactItem, GroupItem } from '../../state/AppDataContext';
 
 interface GroupRecipientPanelProps {
@@ -46,4 +47,8 @@ export function GroupRecipientPanel({
       <small>Selected: {selectedIds.length}</small>
     </div>
   );
+=======
+export function GroupRecipientPanel() {
+  return null;
+>>>>>>> main
 }

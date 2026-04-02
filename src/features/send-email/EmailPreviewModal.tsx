@@ -1,5 +1,6 @@
 import { Modal } from '../../components/ui/Modal';
 
+<<<<<<< HEAD
 interface PreviewItem {
   contactName: string;
   to: string;
@@ -32,4 +33,8 @@ export function EmailPreviewModal({ open, previews, onClose }: EmailPreviewModal
       </div>
     </Modal>
   );
+=======
+export function EmailPreviewModal() {
+  return <Modal open={false} title="Email Preview" />;
+>>>>>>> main
 }

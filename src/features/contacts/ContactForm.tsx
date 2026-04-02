@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { Button } from '../../components/ui/Button';
+<<<<<<< HEAD
 import { GroupItem } from '../../state/AppDataContext';
 
 interface ContactFormProps {
@@ -17,10 +18,22 @@ export function ContactForm({ groups, onSubmit }: ContactFormProps) {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [groupIds, setGroupIds] = useState<string[]>([]);
+=======
+
+interface ContactFormProps {
+  onSubmit: (payload: { firstName: string; lastName: string; email: string }) => void;
+}
+
+export function ContactForm({ onSubmit }: ContactFormProps) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+>>>>>>> main
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (!firstName.trim() || !lastName.trim() || !email.trim()) return;
+<<<<<<< HEAD
     onSubmit({ firstName: firstName.trim(), lastName: lastName.trim(), email: email.trim(), groupIds });
     setFirstName('');
     setLastName('');
@@ -32,6 +45,12 @@ export function ContactForm({ groups, onSubmit }: ContactFormProps) {
     setGroupIds((current) =>
       current.includes(groupId) ? current.filter((id) => id !== groupId) : [...current, groupId]
     );
+=======
+    onSubmit({ firstName: firstName.trim(), lastName: lastName.trim(), email: email.trim() });
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+>>>>>>> main
   };
 
   return (
@@ -39,6 +58,7 @@ export function ContactForm({ groups, onSubmit }: ContactFormProps) {
       <input placeholder="First name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
       <input placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
       <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+<<<<<<< HEAD
       <div className="page-card" style={{ padding: '0.5rem' }}>
         <strong>Assign to Groups</strong>
         {groups.length ? (
@@ -57,6 +77,8 @@ export function ContactForm({ groups, onSubmit }: ContactFormProps) {
           <p style={{ marginBottom: 0 }}>No groups yet.</p>
         )}
       </div>
+=======
+>>>>>>> main
       <Button type="submit">Save Contact</Button>
     </form>
   );

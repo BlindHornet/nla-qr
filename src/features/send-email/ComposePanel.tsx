@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Button } from '../../components/ui/Button';
 
 interface ComposePanelProps {
@@ -25,4 +26,8 @@ export function ComposePanel({
       <Button onClick={onGenerate}>Generate {recipientCount} Email Preview(s)</Button>
     </div>
   );
+=======
+export function ComposePanel() {
+  return null;
+>>>>>>> main
 }

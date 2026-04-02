@@ -1,18 +1,30 @@
+<<<<<<< HEAD
 import { GroupItem, useAppData } from '../../state/AppDataContext';
+=======
+interface GroupItem {
+  id: string;
+  name: string;
+  description: string;
+}
+>>>>>>> main
 
 interface GroupsGridProps {
   groups: GroupItem[];
 }
 
 export function GroupsGrid({ groups }: GroupsGridProps) {
+<<<<<<< HEAD
   const { contacts } = useAppData();
 
+=======
+>>>>>>> main
   if (!groups.length) {
     return <div className="page-card">No groups yet. Click <strong>Add Group</strong> to create one.</div>;
   }
 
   return (
     <div style={{ display: 'grid', gap: '0.75rem', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+<<<<<<< HEAD
       {groups.map((group) => {
         const memberCount = contacts.filter((contact) => contact.groupIds.includes(group.id)).length;
         return (
@@ -23,6 +35,14 @@ export function GroupsGrid({ groups }: GroupsGridProps) {
           </article>
         );
       })}
+=======
+      {groups.map((group) => (
+        <article className="page-card" key={group.id}>
+          <h3 style={{ marginTop: 0 }}>{group.name}</h3>
+          <p style={{ marginBottom: 0, color: '#475569' }}>{group.description || 'No description'}</p>
+        </article>
+      ))}
+>>>>>>> main
     </div>
   );
 }

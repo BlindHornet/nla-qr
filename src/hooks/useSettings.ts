@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useAppData } from '../state/AppDataContext';
 
 export function useSettings() {
@@ -6,5 +7,11 @@ export function useSettings() {
     settings,
     loading: false,
     updateSettings
+=======
+export function useSettings() {
+  return {
+    settings: null,
+    loading: false
+>>>>>>> main
   };
 }

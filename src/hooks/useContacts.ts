@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useAppData } from '../state/AppDataContext';
 
 export function useContacts() {
@@ -8,5 +9,11 @@ export function useContacts() {
     addContact,
     importContacts,
     updateContactGroups
+=======
+export function useContacts() {
+  return {
+    contacts: [],
+    loading: false
+>>>>>>> main
   };
 }
