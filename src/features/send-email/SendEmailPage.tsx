@@ -20,6 +20,9 @@ interface PreviewItem {
 
 export function SendEmailPage() {
   const { contacts, groups, settings } = useAppData();
+  const activeGroups = groups.filter(
+    (group) => !group.expiresAt || new Date(group.expiresAt) >= new Date()
+  );
   const [mode, setMode] = useState<Mode>("group");
   const [selectedGroupId, setSelectedGroupId] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -100,7 +103,7 @@ export function SendEmailPage() {
       >
         {mode === "group" ? (
           <GroupRecipientPanel
-            groups={groups}
+            groups={activeGroups}
             contacts={contacts}
             selectedGroupId={selectedGroupId}
             selectedIds={selectedIds}
