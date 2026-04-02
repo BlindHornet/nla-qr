@@ -66,7 +66,7 @@ export function ContactsView({
   return (
     <div style={{ display: "grid", gap: "0.5rem" }}>
       {visibleSections.map((section) => {
-        const isOpen = !!expanded[section.key];
+        const isOpen = !!expanded[section.key] || !!q;
         const matchingMembers = section.members.filter(matches);
         const countLabel = q
           ? `${matchingMembers.length} / ${section.members.length}`
