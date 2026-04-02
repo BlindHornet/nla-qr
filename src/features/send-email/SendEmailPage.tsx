@@ -109,9 +109,19 @@ export function SendEmailPage() {
             selectedIds={selectedIds}
             onSelectGroup={(groupId) => {
               setSelectedGroupId(groupId);
-              setSelectedIds([]);
+              const memberIds = contacts
+                .filter((c) => c.groupIds.includes(groupId))
+                .map((c) => c.id);
+              setSelectedIds(memberIds);
             }}
             onToggleRecipient={toggleRecipient}
+            onSelectAll={() => {
+              const memberIds = contacts
+                .filter((c) => c.groupIds.includes(selectedGroupId))
+                .map((c) => c.id);
+              setSelectedIds(memberIds);
+            }}
+            onDeselectAll={() => setSelectedIds([])}
           />
         ) : (
           <IndividualRecipientPanel

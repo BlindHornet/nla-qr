@@ -7,6 +7,8 @@ interface GroupRecipientPanelProps {
   selectedIds: string[];
   onSelectGroup: (groupId: string) => void;
   onToggleRecipient: (contactId: string) => void;
+  onSelectAll: () => void;
+  onDeselectAll: () => void;
 }
 
 export function GroupRecipientPanel({
@@ -16,6 +18,8 @@ export function GroupRecipientPanel({
   selectedIds,
   onSelectGroup,
   onToggleRecipient,
+  onSelectAll,
+  onDeselectAll,
 }: GroupRecipientPanelProps) {
   const members = selectedGroupId
     ? contacts.filter((contact) => contact.groupIds.includes(selectedGroupId))
@@ -35,6 +39,28 @@ export function GroupRecipientPanel({
           </option>
         ))}
       </select>
+
+      {selectedGroupId && members.length > 0 && (
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            style={{ padding: "0.25rem 0.6rem", fontSize: "0.8rem" }}
+            onClick={onSelectAll}
+          >
+            Select All
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            style={{ padding: "0.25rem 0.6rem", fontSize: "0.8rem" }}
+            onClick={onDeselectAll}
+          >
+            Deselect All
+          </button>
+        </div>
+      )}
+
       {members.map((contact) => (
         <label key={contact.id}>
           <input
