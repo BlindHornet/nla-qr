@@ -4,6 +4,12 @@ import { GroupItem } from "../../state/AppDataContext";
 
 interface ContactFormProps {
   groups: GroupItem[];
+  initialValues?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    groupIds: string[];
+  };
   onSubmit: (payload: {
     firstName: string;
     lastName: string;
@@ -12,11 +18,11 @@ interface ContactFormProps {
   }) => void;
 }
 
-export function ContactForm({ groups, onSubmit }: ContactFormProps) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [groupIds, setGroupIds] = useState<string[]>([]);
+export function ContactForm({ groups, initialValues, onSubmit }: ContactFormProps) {
+  const [firstName, setFirstName] = useState(initialValues?.firstName ?? "");
+  const [lastName, setLastName] = useState(initialValues?.lastName ?? "");
+  const [email, setEmail] = useState(initialValues?.email ?? "");
+  const [groupIds, setGroupIds] = useState<string[]>(initialValues?.groupIds ?? []);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -27,17 +33,13 @@ export function ContactForm({ groups, onSubmit }: ContactFormProps) {
       email: email.trim(),
       groupIds,
     });
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setGroupIds([]);
   };
 
   const toggleGroup = (groupId: string) => {
     setGroupIds((current) =>
       current.includes(groupId)
         ? current.filter((id) => id !== groupId)
-        : [...current, groupId],
+        : [...current, groupId]
     );
   };
 
@@ -79,7 +81,7 @@ export function ContactForm({ groups, onSubmit }: ContactFormProps) {
           <p style={{ marginBottom: 0 }}>No groups yet.</p>
         )}
       </div>
-      <Button type="submit">Save Contact</Button>
+      <Button type="submit">{initialValues ? "Save Changes" : "Save Contact"}</Button>
     </form>
   );
 }
