@@ -1,19 +1,13 @@
-<<<<<<< HEAD
-import { useAppData } from '../state/AppDataContext';
+import { useAppData } from "../state/AppDataContext";
 
 export function useContacts() {
-  const { contacts, addContact, importContacts, updateContactGroups } = useAppData();
+  const { contacts, addContact, importContacts, updateContactGroups } =
+    useAppData();
   return {
     contacts,
     loading: false,
     addContact,
     importContacts,
-    updateContactGroups
-=======
-export function useContacts() {
-  return {
-    contacts: [],
-    loading: false
->>>>>>> main
+    updateContactGroups,
   };
 }

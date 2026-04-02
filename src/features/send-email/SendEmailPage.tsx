@@ -1,15 +1,14 @@
-<<<<<<< HEAD
-import { useMemo, useState } from 'react';
-import { PageHeader } from '../../components/layout/PageHeader';
-import { Button } from '../../components/ui/Button';
-import { useAppData } from '../../state/AppDataContext';
-import { toQRCodeDataUrl } from '../../lib/qrcode';
-import { ComposePanel } from './ComposePanel';
-import { EmailPreviewModal } from './EmailPreviewModal';
-import { GroupRecipientPanel } from './GroupRecipientPanel';
-import { IndividualRecipientPanel } from './IndividualRecipientPanel';
+import { useMemo, useState } from "react";
+import { PageHeader } from "../../components/layout/PageHeader";
+import { Button } from "../../components/ui/Button";
+import { useAppData } from "../../state/AppDataContext";
+import { toQRCodeDataUrl } from "../../lib/qrcode";
+import { ComposePanel } from "./ComposePanel";
+import { EmailPreviewModal } from "./EmailPreviewModal";
+import { GroupRecipientPanel } from "./GroupRecipientPanel";
+import { IndividualRecipientPanel } from "./IndividualRecipientPanel";
 
-type Mode = 'group' | 'individual';
+type Mode = "group" | "individual";
 
 interface PreviewItem {
   contactName: string;
@@ -21,23 +20,29 @@ interface PreviewItem {
 
 export function SendEmailPage() {
   const { contacts, groups, settings } = useAppData();
-  const [mode, setMode] = useState<Mode>('group');
-  const [selectedGroupId, setSelectedGroupId] = useState('');
+  const [mode, setMode] = useState<Mode>("group");
+  const [selectedGroupId, setSelectedGroupId] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [search, setSearch] = useState('');
-  const [subject, setSubject] = useState('Your Family QR Code — {Last Name} Family');
-  const [message, setMessage] = useState('Please use your attached QR code when arriving on campus.');
+  const [search, setSearch] = useState("");
+  const [subject, setSubject] = useState(
+    "Your Family QR Code — {Last Name} Family",
+  );
+  const [message, setMessage] = useState(
+    "Please use your attached QR code when arriving on campus.",
+  );
   const [previews, setPreviews] = useState<PreviewItem[]>([]);
   const [openPreview, setOpenPreview] = useState(false);
 
   const selectedContacts = useMemo(
     () => contacts.filter((contact) => selectedIds.includes(contact.id)),
-    [contacts, selectedIds]
+    [contacts, selectedIds],
   );
 
   const toggleRecipient = (contactId: string) => {
     setSelectedIds((current) =>
-      current.includes(contactId) ? current.filter((id) => id !== contactId) : [...current, contactId]
+      current.includes(contactId)
+        ? current.filter((id) => id !== contactId)
+        : [...current, contactId],
     );
   };
 
@@ -49,11 +54,11 @@ export function SendEmailPage() {
         return {
           contactName: `${contact.firstName} ${contact.lastName}`,
           to: contact.email,
-          subject: subject.replace('{Last Name}', contact.lastName),
+          subject: subject.replace("{Last Name}", contact.lastName),
           qrLink,
-          qrDataUrl: await toQRCodeDataUrl(qrLink)
+          qrDataUrl: await toQRCodeDataUrl(qrLink),
         };
-      })
+      }),
     );
     setPreviews(items);
     setOpenPreview(true);
@@ -63,20 +68,37 @@ export function SendEmailPage() {
 
   return (
     <div>
-      <PageHeader title="Send Email" subtitle="Select groups or individual contacts and generate QR email previews." />
+      <PageHeader
+        title="Send Email"
+        subtitle="Select groups or individual contacts and generate QR email previews."
+      />
       {!settings.gmailConnected ? (
-        <p className="page-card">Connect Gmail in Settings first to enable sending.</p>
+        <p className="page-card">
+          Connect Gmail in Settings first to enable sending.
+        </p>
       ) : null}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
-        <Button variant={mode === 'group' ? 'primary' : 'secondary'} onClick={() => setMode('group')}>
+      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem" }}>
+        <Button
+          variant={mode === "group" ? "primary" : "secondary"}
+          onClick={() => setMode("group")}
+        >
           Group Mode
         </Button>
-        <Button variant={mode === 'individual' ? 'primary' : 'secondary'} onClick={() => setMode('individual')}>
+        <Button
+          variant={mode === "individual" ? "primary" : "secondary"}
+          onClick={() => setMode("individual")}
+        >
           Individual Mode
         </Button>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: '0.75rem' }}>
-        {mode === 'group' ? (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1.3fr",
+          gap: "0.75rem",
+        }}
+      >
+        {mode === "group" ? (
           <GroupRecipientPanel
             groups={groups}
             contacts={contacts}
@@ -106,23 +128,17 @@ export function SendEmailPage() {
           onGenerate={handleGeneratePreview}
         />
       </div>
-      <p style={{ marginBottom: '0.5rem' }}>
-        Send status: {canSend ? `Ready to send to ${selectedContacts.length} recipients` : 'Select recipients and connect Gmail'}
+      <p style={{ marginBottom: "0.5rem" }}>
+        Send status:{" "}
+        {canSend
+          ? `Ready to send to ${selectedContacts.length} recipients`
+          : "Select recipients and connect Gmail"}
       </p>
-      <EmailPreviewModal open={openPreview} previews={previews} onClose={() => setOpenPreview(false)} />
-=======
-import { PageHeader } from '../../components/layout/PageHeader';
-import { EmptyState } from '../../components/ui/EmptyState';
-
-export function SendEmailPage() {
-  return (
-    <div>
-      <PageHeader title="Send Email" subtitle="Compose QR emails for individuals or groups." />
-      <EmptyState
-        title="Compose experience coming next"
-        description="Group mode and individual mode panels will be added in the next iteration."
+      <EmailPreviewModal
+        open={openPreview}
+        previews={previews}
+        onClose={() => setOpenPreview(false)}
       />
->>>>>>> main
     </div>
   );
 }

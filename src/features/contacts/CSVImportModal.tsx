@@ -1,32 +1,27 @@
-import { ChangeEvent, useState } from 'react';
-import { Modal } from '../../components/ui/Modal';
-import { parseCSVText } from '../../lib/csv';
-<<<<<<< HEAD
-import { GroupItem } from '../../state/AppDataContext';
+import { ChangeEvent, useState } from "react";
+import { Modal } from "../../components/ui/Modal";
+import { parseCSVText } from "../../lib/csv";
+import { GroupItem } from "../../state/AppDataContext";
 
 interface CSVImportModalProps {
   open: boolean;
   groups: GroupItem[];
   onClose: () => void;
-  onImport: (rows: Array<{ firstName: string; lastName: string; email: string }>, groupId?: string) => void;
+  onImport: (
+    rows: Array<{ firstName: string; lastName: string; email: string }>,
+    groupId?: string,
+  ) => void;
 }
 
-export function CSVImportModal({ open, groups, onClose, onImport }: CSVImportModalProps) {
-  const [fileName, setFileName] = useState('');
+export function CSVImportModal({
+  open,
+  groups,
+  onClose,
+  onImport,
+}: CSVImportModalProps) {
+  const [fileName, setFileName] = useState("");
   const [count, setCount] = useState(0);
-  const [selectedGroupId, setSelectedGroupId] = useState('');
-=======
-
-interface CSVImportModalProps {
-  open: boolean;
-  onClose: () => void;
-  onImport: (rows: Array<{ firstName: string; lastName: string; email: string }>) => void;
-}
-
-export function CSVImportModal({ open, onClose, onImport }: CSVImportModalProps) {
-  const [fileName, setFileName] = useState('');
-  const [count, setCount] = useState(0);
->>>>>>> main
+  const [selectedGroupId, setSelectedGroupId] = useState("");
 
   const handleFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -35,20 +30,18 @@ export function CSVImportModal({ open, onClose, onImport }: CSVImportModalProps)
     const text = await file.text();
     const parsed = parseCSVText(text);
     setCount(parsed.length);
-<<<<<<< HEAD
     onImport(parsed, selectedGroupId || undefined);
-=======
-    onImport(parsed);
->>>>>>> main
   };
 
   return (
     <Modal open={open} title="Import Contacts from CSV" onClose={onClose}>
-      <div style={{ display: 'grid', gap: '0.5rem' }}>
-<<<<<<< HEAD
+      <div style={{ display: "grid", gap: "0.5rem" }}>
         <label>
           Add imported contacts to group
-          <select value={selectedGroupId} onChange={(e) => setSelectedGroupId(e.target.value)}>
+          <select
+            value={selectedGroupId}
+            onChange={(e) => setSelectedGroupId(e.target.value)}
+          >
             <option value="">None</option>
             {groups.map((group) => (
               <option key={group.id} value={group.id}>
@@ -57,10 +50,12 @@ export function CSVImportModal({ open, onClose, onImport }: CSVImportModalProps)
             ))}
           </select>
         </label>
-=======
->>>>>>> main
         <input type="file" accept=".csv,text/csv" onChange={handleFile} />
-        {fileName ? <p style={{ margin: 0 }}>Loaded {fileName} ({count} valid rows)</p> : null}
+        {fileName ? (
+          <p style={{ margin: 0 }}>
+            Loaded {fileName} ({count} valid rows)
+          </p>
+        ) : null}
       </div>
     </Modal>
   );

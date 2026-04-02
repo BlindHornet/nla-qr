@@ -1,7 +1,6 @@
-<<<<<<< HEAD
-import { FormEvent, useState } from 'react';
-import { Button } from '../../components/ui/Button';
-import { useAppData } from '../../state/AppDataContext';
+import { FormEvent, useState } from "react";
+import { Button } from "../../components/ui/Button";
+import { useAppData } from "../../state/AppDataContext";
 
 export function GmailAuthSection() {
   const { settings, updateSettings } = useAppData();
@@ -14,16 +13,18 @@ export function GmailAuthSection() {
   };
 
   return (
-    <section className="page-card" style={{ marginBottom: '1rem' }}>
+    <section className="page-card" style={{ marginBottom: "1rem" }}>
       <h3>Gmail</h3>
-      <form onSubmit={handleConnect} style={{ display: 'grid', gap: '0.5rem' }}>
+      <form onSubmit={handleConnect} style={{ display: "grid", gap: "0.5rem" }}>
         <input
           placeholder="gmail@example.com"
           value={draftEmail}
           onChange={(event) => setDraftEmail(event.target.value)}
         />
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <Button type="submit">{settings.gmailConnected ? 'Update Email' : 'Connect Gmail'}</Button>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <Button type="submit">
+            {settings.gmailConnected ? "Update Email" : "Connect Gmail"}
+          </Button>
           {settings.gmailConnected ? (
             <Button
               type="button"
@@ -36,15 +37,11 @@ export function GmailAuthSection() {
         </div>
       </form>
       <p style={{ marginBottom: 0 }}>
-        Status: {settings.gmailConnected ? `Connected as ${settings.gmailEmail}` : 'Not connected'}
+        Status:{" "}
+        {settings.gmailConnected
+          ? `Connected as ${settings.gmailEmail}`
+          : "Not connected"}
       </p>
-=======
-export function GmailAuthSection() {
-  return (
-    <section className="page-card" style={{ marginBottom: '1rem' }}>
-      <h3>Gmail</h3>
-      <p>OAuth connection flow will be implemented in a follow-up step.</p>
->>>>>>> main
     </section>
   );
 }

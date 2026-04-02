@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-import { ContactItem, GroupItem } from '../../state/AppDataContext';
+import { ContactItem, GroupItem } from "../../state/AppDataContext";
 
 interface GroupRecipientPanelProps {
   groups: GroupItem[];
@@ -16,16 +15,19 @@ export function GroupRecipientPanel({
   selectedGroupId,
   selectedIds,
   onSelectGroup,
-  onToggleRecipient
+  onToggleRecipient,
 }: GroupRecipientPanelProps) {
   const members = selectedGroupId
     ? contacts.filter((contact) => contact.groupIds.includes(selectedGroupId))
     : [];
 
   return (
-    <div className="page-card" style={{ display: 'grid', gap: '0.5rem' }}>
+    <div className="page-card" style={{ display: "grid", gap: "0.5rem" }}>
       <h3 style={{ marginTop: 0 }}>Group Mode</h3>
-      <select value={selectedGroupId} onChange={(e) => onSelectGroup(e.target.value)}>
+      <select
+        value={selectedGroupId}
+        onChange={(e) => onSelectGroup(e.target.value)}
+      >
         <option value="">Select Group</option>
         {groups.map((group) => (
           <option value={group.id} key={group.id}>
@@ -37,7 +39,7 @@ export function GroupRecipientPanel({
         <label key={contact.id}>
           <input
             type="checkbox"
-            style={{ width: 'auto', marginRight: '0.35rem' }}
+            style={{ width: "auto", marginRight: "0.35rem" }}
             checked={selectedIds.includes(contact.id)}
             onChange={() => onToggleRecipient(contact.id)}
           />
@@ -47,8 +49,4 @@ export function GroupRecipientPanel({
       <small>Selected: {selectedIds.length}</small>
     </div>
   );
-=======
-export function GroupRecipientPanel() {
-  return null;
->>>>>>> main
 }

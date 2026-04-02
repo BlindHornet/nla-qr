@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-import { ContactItem } from '../../state/AppDataContext';
+import { ContactItem } from "../../state/AppDataContext";
 
 interface IndividualRecipientPanelProps {
   contacts: ContactItem[];
@@ -14,24 +13,30 @@ export function IndividualRecipientPanel({
   search,
   selectedIds,
   onSearchChange,
-  onToggleRecipient
+  onToggleRecipient,
 }: IndividualRecipientPanelProps) {
   const normalized = search.trim().toLowerCase();
   const filtered = normalized
     ? contacts.filter((contact) =>
-        `${contact.firstName} ${contact.lastName} ${contact.email}`.toLowerCase().includes(normalized)
+        `${contact.firstName} ${contact.lastName} ${contact.email}`
+          .toLowerCase()
+          .includes(normalized),
       )
     : contacts;
 
   return (
-    <div className="page-card" style={{ display: 'grid', gap: '0.5rem' }}>
+    <div className="page-card" style={{ display: "grid", gap: "0.5rem" }}>
       <h3 style={{ marginTop: 0 }}>Individual Mode</h3>
-      <input value={search} onChange={(e) => onSearchChange(e.target.value)} placeholder="Search contact" />
+      <input
+        value={search}
+        onChange={(e) => onSearchChange(e.target.value)}
+        placeholder="Search contact"
+      />
       {filtered.map((contact) => (
         <label key={contact.id}>
           <input
             type="checkbox"
-            style={{ width: 'auto', marginRight: '0.35rem' }}
+            style={{ width: "auto", marginRight: "0.35rem" }}
             checked={selectedIds.includes(contact.id)}
             onChange={() => onToggleRecipient(contact.id)}
           />
@@ -41,8 +46,4 @@ export function IndividualRecipientPanel({
       <small>Selected: {selectedIds.length}</small>
     </div>
   );
-=======
-export function IndividualRecipientPanel() {
-  return null;
->>>>>>> main
 }
