@@ -1,10 +1,20 @@
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  collection,
+  deleteField,
+  doc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  writeBatch,
+} from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 export interface GroupItem {
   id: string;
   name: string;
   description: string;
-  expiresAt?: string; // ISO date string e.g. "2026-06-01"
+  expiresAt?: string;
 }
 
 export interface ContactItem {
@@ -31,81 +41,103 @@ interface AppDataContextValue {
   contacts: ContactItem[];
   groups: GroupItem[];
   settings: AppSettings;
-  addGroup: (payload: { name: string; description: string }) => void;
-  updateGroup: (id: string, payload: { name: string; description: string; expiresAt?: string }) => void;
-  deleteGroup: (id: string) => void;
-  addContact: (payload: { firstName: string; lastName: string; email: string; groupIds: string[] }) => void;
-  importContacts: (rows: CSVRow[], groupId?: string) => void;
-  updateContactGroups: (contactId: string, groupIds: string[]) => void;
+  loading: boolean;
+  addGroup: (payload: { name: string; description: string; expiresAt?: string }) => Promise<void>;
+  updateGroup: (id: string, payload: { name: string; description: string; expiresAt?: string }) => Promise<void>;
+  deleteGroup: (id: string) => Promise<void>;
+  addContact: (payload: { firstName: string; lastName: string; email: string; groupIds: string[] }) => Promise<void>;
+  importContacts: (rows: CSVRow[], groupId?: string) => Promise<void>;
+  updateContactGroups: (contactId: string, groupIds: string[]) => Promise<void>;
   updateSettings: (next: Partial<AppSettings>) => void;
 }
 
 const AppDataContext = createContext<AppDataContextValue | undefined>(undefined);
 
-const initialGroups: GroupItem[] = [
-  { id: 'g-parents', name: 'Parents', description: 'Default parent group' },
-  { id: 'g-teachers', name: 'Teachers', description: 'Default teacher group' }
-];
-
 export function AppDataProvider({ children }: PropsWithChildren) {
-  const [groups, setGroups] = useState<GroupItem[]>(initialGroups);
+  const [groups, setGroups] = useState<GroupItem[]>([]);
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [settings, setSettings] = useState<AppSettings>({
     appName: 'NLA QR',
     gmailEmail: '',
-    gmailConnected: false
+    gmailConnected: false,
   });
+  const [groupsLoaded, setGroupsLoaded] = useState(false);
+  const [contactsLoaded, setContactsLoaded] = useState(false);
+
+  useEffect(() => {
+    const unsubGroups = onSnapshot(collection(db, 'groups'), (snap) => {
+      setGroups(snap.docs.map((d) => d.data() as GroupItem));
+      setGroupsLoaded(true);
+    });
+    const unsubContacts = onSnapshot(collection(db, 'contacts'), (snap) => {
+      setContacts(snap.docs.map((d) => d.data() as ContactItem));
+      setContactsLoaded(true);
+    });
+    return () => {
+      unsubGroups();
+      unsubContacts();
+    };
+  }, []);
+
+  const loading = !groupsLoaded || !contactsLoaded;
 
   const value = useMemo<AppDataContextValue>(
     () => ({
       contacts,
       groups,
       settings,
-      addGroup: ({ name, description }) => {
-        setGroups((current) => [...current, { id: crypto.randomUUID(), name, description }]);
+      loading,
+      addGroup: async ({ name, description, expiresAt }) => {
+        const id = crypto.randomUUID();
+        const data: GroupItem = { id, name, description };
+        if (expiresAt) data.expiresAt = expiresAt;
+        await setDoc(doc(db, 'groups', id), data);
       },
-      updateGroup: (id, payload) => {
-        setGroups((current) =>
-          current.map((group) => (group.id === id ? { ...group, ...payload } : group))
-        );
+      updateGroup: async (id, payload) => {
+        await updateDoc(doc(db, 'groups', id), {
+          name: payload.name,
+          description: payload.description,
+          expiresAt: payload.expiresAt ?? deleteField(),
+        });
       },
-      deleteGroup: (id) => {
-        setGroups((current) => current.filter((group) => group.id !== id));
-        setContacts((current) =>
-          current.map((contact) => ({
-            ...contact,
-            groupIds: contact.groupIds.filter((gid) => gid !== id),
-          }))
-        );
+      deleteGroup: async (id) => {
+        const batch = writeBatch(db);
+        batch.delete(doc(db, 'groups', id));
+        for (const contact of contacts) {
+          if (contact.groupIds.includes(id)) {
+            batch.update(doc(db, 'contacts', contact.id), {
+              groupIds: contact.groupIds.filter((gid) => gid !== id),
+            });
+          }
+        }
+        await batch.commit();
       },
-      addContact: ({ firstName, lastName, email, groupIds }) => {
-        setContacts((current) => [
-          ...current,
-          { id: crypto.randomUUID(), firstName, lastName, email, groupIds }
-        ]);
+      addContact: async ({ firstName, lastName, email, groupIds }) => {
+        const id = crypto.randomUUID();
+        await setDoc(doc(db, 'contacts', id), { id, firstName, lastName, email, groupIds });
       },
-      importContacts: (rows, groupId) => {
-        setContacts((current) => [
-          ...current,
-          ...rows.map((row) => ({
-            id: crypto.randomUUID(),
+      importContacts: async (rows, groupId) => {
+        const batch = writeBatch(db);
+        for (const row of rows) {
+          const id = crypto.randomUUID();
+          batch.set(doc(db, 'contacts', id), {
+            id,
             firstName: row.firstName,
             lastName: row.lastName,
             email: row.email,
-            groupIds: groupId ? [groupId] : []
-          }))
-        ]);
+            groupIds: groupId ? [groupId] : [],
+          });
+        }
+        await batch.commit();
       },
-      updateContactGroups: (contactId, groupIds) => {
-        setContacts((current) =>
-          current.map((contact) => (contact.id === contactId ? { ...contact, groupIds } : contact))
-        );
+      updateContactGroups: async (contactId, groupIds) => {
+        await updateDoc(doc(db, 'contacts', contactId), { groupIds });
       },
       updateSettings: (next) => {
         setSettings((current) => ({ ...current, ...next }));
-      }
+      },
     }),
-    [contacts, groups, settings]
+    [contacts, groups, settings, loading]
   );
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;
