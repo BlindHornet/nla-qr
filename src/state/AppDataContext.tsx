@@ -4,6 +4,7 @@ export interface GroupItem {
   id: string;
   name: string;
   description: string;
+  expiresAt?: string; // ISO date string e.g. "2026-06-01"
 }
 
 export interface ContactItem {
@@ -31,6 +32,8 @@ interface AppDataContextValue {
   groups: GroupItem[];
   settings: AppSettings;
   addGroup: (payload: { name: string; description: string }) => void;
+  updateGroup: (id: string, payload: { name: string; description: string; expiresAt?: string }) => void;
+  deleteGroup: (id: string) => void;
   addContact: (payload: { firstName: string; lastName: string; email: string; groupIds: string[] }) => void;
   importContacts: (rows: CSVRow[], groupId?: string) => void;
   updateContactGroups: (contactId: string, groupIds: string[]) => void;
@@ -60,6 +63,20 @@ export function AppDataProvider({ children }: PropsWithChildren) {
       settings,
       addGroup: ({ name, description }) => {
         setGroups((current) => [...current, { id: crypto.randomUUID(), name, description }]);
+      },
+      updateGroup: (id, payload) => {
+        setGroups((current) =>
+          current.map((group) => (group.id === id ? { ...group, ...payload } : group))
+        );
+      },
+      deleteGroup: (id) => {
+        setGroups((current) => current.filter((group) => group.id !== id));
+        setContacts((current) =>
+          current.map((contact) => ({
+            ...contact,
+            groupIds: contact.groupIds.filter((gid) => gid !== id),
+          }))
+        );
       },
       addContact: ({ firstName, lastName, email, groupIds }) => {
         setContacts((current) => [
