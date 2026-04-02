@@ -1,6 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import {
   collection,
+  deleteDoc,
   deleteField,
   doc,
   onSnapshot,
@@ -48,6 +49,8 @@ interface AppDataContextValue {
   addContact: (payload: { firstName: string; lastName: string; email: string; groupIds: string[] }) => Promise<void>;
   importContacts: (rows: CSVRow[], groupId?: string) => Promise<void>;
   updateContactGroups: (contactId: string, groupIds: string[]) => Promise<void>;
+  updateContact: (id: string, payload: { firstName: string; lastName: string; email: string; groupIds: string[] }) => Promise<void>;
+  deleteContact: (id: string) => Promise<void>;
   updateSettings: (next: Partial<AppSettings>) => void;
 }
 
@@ -132,6 +135,17 @@ export function AppDataProvider({ children }: PropsWithChildren) {
       },
       updateContactGroups: async (contactId, groupIds) => {
         await updateDoc(doc(db, 'contacts', contactId), { groupIds });
+      },
+      updateContact: async (id, payload) => {
+        await updateDoc(doc(db, 'contacts', id), {
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+          email: payload.email,
+          groupIds: payload.groupIds,
+        });
+      },
+      deleteContact: async (id) => {
+        await deleteDoc(doc(db, 'contacts', id));
       },
       updateSettings: (next) => {
         setSettings((current) => ({ ...current, ...next }));
