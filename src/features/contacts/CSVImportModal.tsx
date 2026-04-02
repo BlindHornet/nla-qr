@@ -34,6 +34,8 @@ export function CSVImportModal({
     if (!file) return;
     const text = await file.text();
     setParseResult(parseCSVText(text));
+    // Reset input value so the same file can be re-selected after closing
+    event.target.value = "";
   };
 
   const handleImport = () => {
